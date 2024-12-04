@@ -1,0 +1,14 @@
+[Unit]
+Description=Telegram payment bot
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStart=/home/tg/paybot/venv/bin/python /home/tg/paybot/bot.py
+
+User=tg
+Group=tg
+
+[Install]
+WantedBy=multi-user.target
