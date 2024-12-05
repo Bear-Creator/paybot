@@ -7,8 +7,8 @@ fi
 cd ./paybot
 git fetch origin
 
-sudo apt install python3 python3-venv -y
-sudo apt autoremove
+sudo apt -y install python3 python3-venv 
+sudo apt -y autoremove
 python3 -m venv ./.venv
 ./.venv/bin/pip install -r ./install.txt
 
