@@ -9,7 +9,7 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.INFO
 )
-logger = logging.getLogger("Bot")
+logger = logging.getLogger("BOT")
 logging.getLogger("httpx").propagate = False
 
 # Состояния пользователей
@@ -124,7 +124,7 @@ async def handle_participants(update: Update, context: ContextTypes.DEFAULT_TYPE
     user_id = update.message.from_user.id
 
     if user_id in user_data and user_data[user_id].get("step") == "participants":
-        participants = update.message.text.split("\n")
+        participants = update.message.text.split(",")
         user_data[user_id]["participants"] = participants
 
         logger.info(f"User {user_id} provided participants: {participants}")
