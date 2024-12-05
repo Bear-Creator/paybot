@@ -1,4 +1,4 @@
-#!bin/bash
+#!bin/sh
 
 sudo apt update && sudo apt upgrade 
 if [ ! -d ./paybot ]; then
@@ -21,6 +21,7 @@ if [ ! -f ./config.py ]; then
 fi
 
 sudo systemctl stop paybot.service
-cp -i ./paybot.service /etc/systemd/system/
+cp ./paybot.service /etc/systemd/system/
+systemctl daemon-reload
 sudo systemctl restart paybot.service &
 disown %%
