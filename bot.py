@@ -12,6 +12,15 @@ logging.basicConfig(
 logger = logging.getLogger("BOT")
 logging.getLogger("httpx").propagate = False
 
+# Функция форматирования списка учасников
+# def participants_formating(s):
+#     lst = []
+#     for i in s.split(","):
+#         while i[0] = " ":
+#             i = i[1:]
+#         lst.append(i)
+#     return lst
+
 # Состояния пользователей
 user_data = {}
 
@@ -124,7 +133,7 @@ async def handle_participants(update: Update, context: ContextTypes.DEFAULT_TYPE
     user_id = update.message.from_user.id
 
     if user_id in user_data and user_data[user_id].get("step") == "participants":
-        participants = update.message.text.split(",")
+        participants = [i.strip() for i in update.message.text.split(",")]
         user_data[user_id]["participants"] = participants
 
         logger.info(f"User {user_id} provided participants: {participants}")
