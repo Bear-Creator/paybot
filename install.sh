@@ -4,7 +4,7 @@ sudo apt update && sudo apt upgrade
 mkdir -p ~/paybot
 cd ~/paybot
 
-sudo apt install python3-venv -y
+sudo apt install python3 python3-venv -y
 python3 -m venv ./.venv
 ./.venv/bin/pip install -r ./install.txt
 

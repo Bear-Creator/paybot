@@ -5,7 +5,7 @@ Description=Telegram payment bot
 Type=oneshot
 RemainAfterExit=yes
 
-ExecStart=/home/tg/paybot/venv/bin/python /home/tg/paybot/bot.py
+ExecStart=/home/tg/paybot/.venv/bin/python /home/tg/paybot/bot.py
 
 User=tg
 Group=tg
