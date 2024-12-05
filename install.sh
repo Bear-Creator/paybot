@@ -1,8 +1,11 @@
 #!bin/sh
 
 sudo apt update && sudo apt upgrade 
-mkdir -p ~/paybot
-cd ~/paybot
+if [ ! -d ./paybot ]; then
+	git clone https://github.com/Bear-Creator/paybot
+fi
+cd ./paybot
+git fetch origin
 
 sudo apt install python3 python3-venv -y
 python3 -m venv ./.venv
@@ -12,9 +15,11 @@ if [ ! -f ./config.py ]; then
 	touch ./config.py
 	read -p "Enter bots API token: " TOKEN
 	read -p "Enter Admin's ID: " ADMIN
-	printf "token = \"$TOKEN\"\nadmin = \"$ADMIN\"" >> ./config.py
+	reed -p "Enter payvment card nomber: " CARD
+	printf "token = \"$TOKEN\"\nadmin = \"$ADMIN\"\ncard_number = $CARD" >> ./config.py
 fi
 
-cp ./paybot.service /etc/systemd/system/
+sudo systemctl stop paybot.service
+cp -i ./paybot.service /etc/systemd/system/
 sudo systemctl restart paybot.service &
 disown %%
