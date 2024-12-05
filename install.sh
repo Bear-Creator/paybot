@@ -1,4 +1,4 @@
-#!bin/sh
+#!bin/bash
 
 sudo apt update && sudo apt upgrade 
 if [ ! -d ./paybot ]; then
@@ -8,6 +8,7 @@ cd ./paybot
 git fetch origin
 
 sudo apt install python3 python3-venv -y
+sudo apt autoremove
 python3 -m venv ./.venv
 ./.venv/bin/pip install -r ./install.txt
 
