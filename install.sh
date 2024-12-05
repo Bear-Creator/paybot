@@ -5,7 +5,7 @@ if [ ! -d ./paybot ]; then
 	git clone https://github.com/Bear-Creator/paybot
 fi
 cd ./paybot
-git fetch origin
+git pull
 chmod +x ./*.sh
 
 sudo apt -y install python3 python3-venv 
