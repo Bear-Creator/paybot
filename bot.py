@@ -1,23 +1,33 @@
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
 import config
 
+# Настройка логирования
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 # Состояния пользователей
 user_data = {}
 
 # Функция подсчета стоимости
 def calculate_price(ticket_count: int) -> int:
+    logger.info(f"Calculating price for {ticket_count} tickets")
     ticket_price = 250  # Цена за один билет
     if ticket_count == 10:
         discount = 0.10  # Скидка 10%
         total_price = ticket_count * ticket_price * (1 - discount)
     else:
         total_price = ticket_count * ticket_price
+    logger.info(f"Total price for {ticket_count} tickets: {total_price}")
     return int(total_price)
 
 # Функция для обработки кнопки "Перезапустить бота"
 async def restart_via_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info("Restarting bot via /start")
     query = update.callback_query
     await query.answer()
 
@@ -27,10 +37,9 @@ async def restart_via_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text="Нажмите сюда -> /start"
     )
 
-
-
 # Стартовое сообщение
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info(f"User {update.effective_user.id} started the bot")
     keyboard = [
         [InlineKeyboardButton("Купить билет 🎟️", callback_data="buy_ticket")],
         [InlineKeyboardButton("Забронировать столик 🍽️", callback_data="reserve_table")],
@@ -49,6 +58,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def main_menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+    logger.info(f"User {query.from_user.id} selected menu option: {query.data}")
 
     if query.data == "buy_ticket":
         await show_ticket_options(query, context)
@@ -59,6 +69,7 @@ async def main_menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Выбор билетов
 async def show_ticket_options(update_or_query, context):
+    logger.info("Displaying ticket options")
     keyboard = [
         [InlineKeyboardButton("1 билет 🎟️", callback_data="1_ticket")],
         [InlineKeyboardButton("2 билета 🎟️", callback_data="2_tickets")],
@@ -73,7 +84,6 @@ async def show_ticket_options(update_or_query, context):
             "Отлично! Мероприятие пройдёт 10 декабря.\n"
             "Скажи, сколько тебе нужно?\n"
             "P.S. При покупке 10 билетов - скидка 10%",
-
             reply_markup=reply_markup
         )
     else:
@@ -88,6 +98,7 @@ async def show_ticket_options(update_or_query, context):
 async def handle_ticket_selection(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+    logger.info(f"User {query.from_user.id} selected ticket option: {query.data}")
 
     user_id = query.from_user.id
     ticket_count = int(query.data.split("_")[0])  # Получаем количество билетов
@@ -114,6 +125,8 @@ async def handle_participants(update: Update, context: ContextTypes.DEFAULT_TYPE
         participants = update.message.text.split("\n")
         user_data[user_id]["participants"] = participants
 
+        logger.info(f"User {user_id} provided participants: {participants}")
+
         await update.message.reply_text(
             f"Список участников принят, проверь, пожалуйста!:\n{chr(10).join(participants)}\n\n"
             "Теперь отправляю тебе реквизиты для оплаты.\n\n"
@@ -125,6 +138,7 @@ async def handle_participants(update: Update, context: ContextTypes.DEFAULT_TYPE
         )
         user_data[user_id]["step"] = "payment"
     else:
+        logger.warning(f"Unexpected input from user {user_id} at step {user_data.get(user_id, {}).get('step')}")
         await update.message.reply_text("Пожалуйста, выбери действие из меню.")
 
 # Обработка скриншота или других медиа
@@ -135,6 +149,8 @@ async def handle_screenshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ticket_count = user_data[user_id]["tickets"]
         total_price = user_data[user_id]["total_price"]
         participants = user_data[user_id]["participants"]
+
+        logger.info(f"User {user_id} submitted payment proof for {ticket_count} tickets")
 
         # Сообщение менеджеру с данными о пользователе
         username = update.message.from_user.username
@@ -156,7 +172,8 @@ async def handle_screenshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_photo(chat_id=config.admin, photo=update.message.photo[-1].file_id)
             await update.message.reply_text("Добавили в список присуствующих. Ждём вас 10 декабря в 22:00 в Тренде! \nБудьте нарядными и с хорошим настроением) \nИ не забудьте паспорта!")
         else:
-            await update.message.reply_text("Пожалуйста, отправьте фото")
+            logger.warning(f"User {user_id} submitted unexpected media type.")
+            await update.message.reply_text("Пришлите, пожалуйста, скриншот оплаты.")
 
 
 # Основная функция
@@ -170,6 +187,7 @@ def main():
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_participants))
     application.add_handler(MessageHandler(filters.PHOTO, handle_screenshot))
 
+    logger.info("Bot started")  
     application.run_polling()
 
 if __name__ == "__main__":
