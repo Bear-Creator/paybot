@@ -5,10 +5,12 @@ import config
 
 # Настройка логирования
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.INFO
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Bot")
+logging.getLogger("httpx").propagate = False
 
 # Состояния пользователей
 user_data = {}
