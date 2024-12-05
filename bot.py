@@ -53,8 +53,7 @@ async def main_menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query.data == "buy_ticket":
         await show_ticket_options(query, context)
     elif query.data == "reserve_table":
-        await query.edit_message_text("Для бронирования столиков обращайтесь к @kste0009")
-        await start(update, context)
+        await query.edit_message_text(f"Для бронирования столиков обращайтесь к @kste0009 \nНажмите -> /start")
     elif query.data == "restart_bot":
         await start(update, context)
 
@@ -65,7 +64,7 @@ async def show_ticket_options(update_or_query, context):
         [InlineKeyboardButton("2 билета 🎟️", callback_data="2_tickets")],
         [InlineKeyboardButton("3 билета 🎟️", callback_data="3_tickets")],
         [InlineKeyboardButton("4 билета 🎟️", callback_data="4_tickets")],
-        [InlineKeyboardButton("10 билетов 🎟️", callback_data="10_tickets")],
+        [InlineKeyboardButton("9+1 билетов 🎟️", callback_data="10_tickets")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -81,7 +80,7 @@ async def show_ticket_options(update_or_query, context):
         await update_or_query.edit_message_text(
             "Отлично! Мероприятие пройдёт 10 декабря.\n"
             "Скажи, сколько тебе нужно?\n"
-            "P.S. При покупке 10 билетов - скидка 10%",
+            "P.S. Специально для тайной вечеринке действует акция «9+1». \nПри покупке девяти билетов, десятый идет в подарок🎁",
             reply_markup=reply_markup
         )
 
@@ -118,7 +117,7 @@ async def handle_participants(update: Update, context: ContextTypes.DEFAULT_TYPE
         await update.message.reply_text(
             f"Список участников принят, проверь, пожалуйста!:\n{chr(10).join(participants)}\n\n"
             "Теперь отправляю тебе реквизиты для оплаты.\n\n"
-            "`{config.card_number}`\n\n"
+            f"{config.card_number}\n\n"
             "После оплаты, отправь, пожалуйста скриншот в виде фотографии сюда!",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("Неправильно! Перезапустить бота 🔄", callback_data="restart_bot")]
