@@ -141,8 +141,9 @@ async def handle_participants(update: Update, context: ContextTypes.DEFAULT_TYPE
         await update.message.reply_text(
             f"Список участников принят, проверь, пожалуйста!:\n{chr(10).join(participants)}\n\n"
             "Теперь отправляю тебе реквизиты для оплаты.\n\n"
-            f"{config.card_number}\n\n"
+            f"`{config.card_number}`\n\n"
             "После оплаты, отправь, пожалуйста скриншот в виде фотографии сюда!",
+            parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("Неправильно! Перезапустить бота 🔄", callback_data="restart_bot")]
             ])
