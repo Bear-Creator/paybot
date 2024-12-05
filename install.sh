@@ -6,6 +6,7 @@ if [ ! -d ./paybot ]; then
 fi
 cd ./paybot
 git fetch origin
+chmod +x ./*.sh
 
 sudo apt -y install python3 python3-venv 
 sudo apt -y autoremove
