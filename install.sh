@@ -16,7 +16,7 @@ if [ ! -f ./config.py ]; then
 	touch ./config.py
 	read -p "Enter bots API token: " TOKEN
 	read -p "Enter Admin's ID: " ADMIN
-	reed -p "Enter payvment card nomber: " CARD
+	read -p "Enter payvment card nomber: " CARD
 	printf "token = \"$TOKEN\"\nadmin = \"$ADMIN\"\ncard_number = $CARD" >> ./config.py
 fi
 
