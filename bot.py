@@ -27,7 +27,7 @@ user_data = {}
 # Функция подсчета стоимости
 def calculate_price(ticket_count: int) -> int:
     logger.info(f"Calculating price for {ticket_count} tickets")
-    ticket_price = 250  # Цена за один билет
+    ticket_price = 350  # Цена за один билет
     if ticket_count == 10:
         discount = 0.10  # Скидка 10%
         total_price = ticket_count * ticket_price * (1 - discount)
